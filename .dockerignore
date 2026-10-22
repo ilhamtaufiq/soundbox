@@ -1,0 +1,8 @@
+node_modules
+backend
+frontend
+.env
+.gopay_cache.json
+watch.js
+demo.js
+bash.exe.stackdump

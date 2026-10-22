@@ -740,6 +740,14 @@ export class GoPayWatcher extends EventEmitter {
       });
    }
 
+   /**
+    * Jalankan poller secara permanen (untuk proses jangka panjang seperti bridge.js).
+    * Dengan begitu listener `payment` menerima semua transaksi baru tanpa perlu waitForPayment.
+    */
+   start() {
+      this._startPoller();
+   }
+
    reset() {
       this._seenIds.clear();
       this._seeded = false;

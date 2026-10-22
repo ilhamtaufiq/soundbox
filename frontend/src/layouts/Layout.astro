@@ -1,0 +1,63 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  current: 'home' | 'soundbox' | 'admin';
+  /** Halaman yang butuh login admin. Dicek sebelum halaman tampil. */
+  requireAuth?: boolean;
+}
+
+const { title, current, requireAuth = false } = Astro.props;
+const links = [
+  { href: '/soundbox', key: 'soundbox', label: 'Soundbox' },
+  { href: '/admin', key: 'admin', label: 'Admin' },
+];
+---
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Soundbox QRIS — terima pembayaran QRIS dan dengar notifikasi suara." />
+    <title>{title} · Soundbox QRIS</title>
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0b1020" />
+    {
+      requireAuth && (
+        <script is:inline>
+          // Sebelum halaman tampil: tanpa token admin, langsung ke login
+          (function () {
+            var hasToken = false;
+            try {
+              hasToken = !!localStorage.getItem('admin_token');
+            } catch (e) {}
+            if (!hasToken) {
+              location.replace('/admin/login?next=' + encodeURIComponent(location.pathname));
+            }
+          })();
+        </script>
+      )
+    }
+  </head>
+  <body>
+    <div class="container">
+      <header class="nav">
+        <a class="brand" href="/">
+          <img class="brand-logo" src="/images/logo.png" alt="" width="32" height="32" />
+          Soundbox<span>QRIS</span>
+        </a>
+        <nav class="nav-links" aria-label="Menu utama">
+          {links.map((link) => (
+            <a href={link.href} aria-current={link.key === current ? 'page' : undefined}>{link.label}</a>
+          ))}
+        </nav>
+      </header>
+      <main>
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

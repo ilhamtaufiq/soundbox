@@ -1,0 +1,61 @@
+# Deploy di Coolify: pasang sebagai resource "Docker Compose", lalu isi environment
+# variable sesuai DEPLOY.md. Hanya service `frontend` yang diberi domain publik.
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?isi MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: gobiz_soundbox
+      MYSQL_USER: ${MYSQL_USER:-soundbox}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?isi MYSQL_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: mysql://${MYSQL_USER:-soundbox}:${MYSQL_PASSWORD}@mysql:3306/gobiz_soundbox
+      BIND_ADDR: 0.0.0.0:8080
+      CORS_ORIGIN: https://soundbox.cianjur.space
+      ADMIN_USERNAME: ${ADMIN_USERNAME:?isi ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?isi ADMIN_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?isi JWT_SECRET}
+      INTERNAL_SECRET: ${INTERNAL_SECRET:?isi INTERNAL_SECRET}
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        PUBLIC_API_URL: https://soundbox.cianjur.space/api
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+  bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile.bridge
+    restart: unless-stopped
+    environment:
+      BACKEND_URL: http://backend:8080
+      INTERNAL_SECRET: ${INTERNAL_SECRET:?isi INTERNAL_SECRET}
+      GOPAY_LOGIN_METHOD: ${GOPAY_LOGIN_METHOD:-password}
+      GOPAY_EMAIL: ${GOPAY_EMAIL:-}
+      GOPAY_PASSWORD: ${GOPAY_PASSWORD:-}
+      GOPAY_PHONE: ${GOPAY_PHONE:-}
+    depends_on:
+      - backend
+
+volumes:
+  mysql-data:

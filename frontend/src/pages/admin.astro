@@ -1,0 +1,7 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AdminDashboard from '../components/AdminDashboard.tsx';
+---
+<Layout title="Admin" current="admin" requireAuth>
+  <AdminDashboard client:load />
+</Layout>

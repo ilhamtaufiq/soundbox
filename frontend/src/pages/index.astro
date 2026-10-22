@@ -1,0 +1,445 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Teks promo dan CTA. Ganti di sini saja untuk mengubah penawaran.
+const promo = {
+  badge: 'Promo Peluncuran',
+  headline: 'Harga peluncuran untuk pendaftar pertama',
+  detail: 'Hubungi kami untuk detail harga peluncuran dan syarat berlakunya.',
+  cta: 'Daftar Sekarang',
+};
+
+const features = [
+  {
+    icon: '🔊',
+    title: 'Kasir tahu tanpa menoleh',
+    text: 'Setiap pembayaran diumumkan dengan suara dan nominal lengkap dalam Bahasa Indonesia.',
+  },
+  {
+    icon: '⚡',
+    title: 'Layar selalu terbaru',
+    text: 'Transaksi terbaru langsung muncul di layar soundbox, tanpa perlu muat ulang.',
+  },
+  {
+    icon: '📊',
+    title: 'Pemasukan terpantau',
+    text: 'Lihat pemasukan hari ini, total, dan transaksi lunas terbaru dari satu halaman.',
+  },
+];
+
+// Perbandingan dengan kategori produk yang sudah ada di pasar. Tidak menyebut merek.
+// Angka harga diambil dari sumber publik per Oktober 2026; cek ulang sebelum dipublikasikan.
+const comparison = {
+  headline: 'Bayar sekali, pakai tanpa langganan harian',
+  detail: 'Software tidak wajib dibeli bersama alat. Alat fisik bersifat opsional dan bisa dipesan lewat pre-order.',
+  columns: ['', 'Soundbox QRIS', 'Langganan dari aplikasi merchant', 'Alat fisik beli putus atau pre-order'],
+  rows: [
+    {
+      feature: 'Perangkat',
+      us: 'Browser di HP, laptop, atau TV',
+      app: 'Disediakan di dalam aplikasi merchant',
+      device: 'Alat fisik yang dikirim ke Anda',
+    },
+    {
+      feature: 'Biaya awal',
+      us: 'Tidak wajib beli alat',
+      app: 'Tanpa beli alat',
+      device: 'Sekitar Rp99.900 sampai Rp350.000 per alat',
+    },
+    {
+      feature: 'Biaya berulang',
+      us: 'Sekali beli, tanpa langganan',
+      app: 'Sekitar Rp1.999 per hari',
+      device: 'Umumnya tanpa langganan harian',
+    },
+    {
+      feature: 'Alat fisik',
+      us: 'Opsional, bisa pre-order',
+      app: 'Tidak ada alat fisik',
+      device: 'Beli putus atau pre-order',
+    },
+    {
+      feature: 'Dashboard dan riwayat',
+      us: 'Ringkasan pemasukan dan daftar transaksi',
+      app: 'Tergantung fitur aplikasi merchant',
+      device: 'Umumnya tidak tersedia',
+    },
+  ],
+};
+
+const steps = [
+  { title: 'Masuk ke dashboard', text: 'Masuk dengan akun admin untuk mengelola soundbox dan melihat pemasukan.' },
+  { title: 'Buka di perangkat kasir', text: 'Buka halaman soundbox di perangkat kasir, lalu tekan Aktifkan Suara sekali.' },
+  { title: 'Terima pembayaran', text: 'Setiap pembayaran masuk langsung berbunyi dan tercatat otomatis.' },
+];
+---
+<Layout title="Soundbox QRIS — Notifikasi Pembayaran Otomatis" current="home">
+  <section class="hero">
+    <div class="hero-text">
+      <span class="badge-promo">{promo.badge}</span>
+      <h1>Tak perlu lagi <span class="accent">cek HP</span> setiap ada pembayaran masuk</h1>
+      <p class="lead">
+        Soundbox QRIS mengumumkan nominal setiap pembayaran dengan suara dalam Bahasa Indonesia.
+        Sekali beli, tanpa langganan harian.
+      </p>
+      <div class="cta-row">
+        <a class="btn primary" href="/admin/login">Aktifkan Soundbox Anda</a>
+        <a class="btn ghost" href="#fitur">Lihat Fitur</a>
+      </div>
+    </div>
+    <img
+      class="hero-art"
+      src="/images/hero-a.png"
+      alt="Soundbox QRIS di atas meja kasir dengan kode QR dan gelombang suara"
+      width="1280"
+      height="720"
+      fetchpriority="high"
+    />
+  </section>
+
+  <section class="promo card" aria-labelledby="promo-title">
+    <div>
+      <span class="badge-promo">{promo.badge}</span>
+      <h2 id="promo-title">{promo.headline}</h2>
+      <p class="muted">{promo.detail}</p>
+    </div>
+    <a class="btn primary" href="/daftar">{promo.cta}</a>
+  </section>
+
+  <section id="fitur" class="section">
+    <h2 class="section-title">Dibuat untuk kasir yang sibuk</h2>
+    <div class="feature-grid">
+      {features.map((f) => (
+        <article class="card feature">
+          <span class="feature-icon" aria-hidden="true">{f.icon}</span>
+          <h3>{f.title}</h3>
+          <p class="muted">{f.text}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="compare-title">
+    <h2 id="compare-title" class="section-title">{comparison.headline}</h2>
+    <p class="section-lead">{comparison.detail}</p>
+    <div class="card compare-wrap">
+      <table class="compare">
+        <thead>
+          <tr>
+            {comparison.columns.map((c, i) => (
+              <th class={i === 1 ? 'us' : ''}>{c}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {comparison.rows.map((r) => (
+            <tr>
+              <th scope="row">{r.feature}</th>
+              <td class="us" data-label={comparison.columns[1]}><span class="check" aria-hidden="true">✓</span> {r.us}</td>
+              <td class="them" data-label={comparison.columns[2]}>{r.app}</td>
+              <td class="them" data-label={comparison.columns[3]}>{r.device}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Cara memulai</h2>
+    <ol class="steps">
+      {steps.map((s, i) => (
+        <li class="card step">
+          <span class="step-no">{i + 1}</span>
+          <div>
+            <strong>{s.title}</strong>
+            <p class="muted">{s.text}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="final card">
+    <h2>Biarkan suara yang mengabari setiap pembayaran</h2>
+    <p class="muted">Mulai dari kasir Anda hari ini. Ada pertanyaan soal harga? Kirim email kapan saja.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="/daftar">Daftar Sekarang</a>
+      <a class="btn ghost" href="/admin/login">Masuk ke Dashboard</a>    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 32px;
+    align-items: center;
+    padding: 48px 0 32px;
+  }
+  .hero-text { min-width: 0; }
+  .hero h1 {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    line-height: 1.15;
+    margin: 16px 0;
+    max-width: 18ch;
+  }
+  .hero-art {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  }
+  .hero .cta-row { justify-content: flex-start; }
+  .accent {
+    background: linear-gradient(90deg, var(--accent), var(--success));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .lead {
+    max-width: 56ch;
+    margin: 0 0 24px;
+    color: var(--muted);
+    font-size: 1.1rem;
+  }
+  .badge-promo {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--warning);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .cta-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-block;
+    min-width: 180px;
+    text-align: center;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.primary {
+    background: var(--accent);
+    color: #001219;
+    box-shadow: 0 8px 24px rgba(0, 174, 217, 0.35);
+  }
+  .btn.ghost {
+    border: 1px solid var(--border);
+    color: var(--text);
+    background: var(--surface);
+  }
+
+  /* Ilustrasi sederhana: lingkaran berdenyut seperti suara yang keluar dari soundbox */
+  .pulse {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 40px auto 0;
+    display: grid;
+    place-items: center;
+  }
+  .pulse .ring {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--success);
+    animation: beat 1.8s ease-out infinite;
+  }
+  @keyframes beat {
+    0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
+    100% { box-shadow: 0 0 0 60px rgba(34, 197, 94, 0); }
+  }
+
+  .promo {
+    margin-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    border-color: var(--warning);
+  }
+  .promo h2 { margin: 12px 0 4px; font-size: 1.3rem; }
+  .promo p { margin: 0; }
+
+  .section { margin-top: 56px; }
+  .section-title {
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 24px;
+  }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .feature {
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .feature:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+  }
+  .feature-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--surface-2);
+    font-size: 1.4rem;
+  }
+  .feature h3 { margin: 12px 0 6px; font-size: 1.1rem; }
+  .feature p { margin: 0; }
+
+  .steps {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+    max-width: 640px;
+  }
+  .step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .step-no {
+    flex: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--accent);
+    color: #001219;
+    font-weight: 700;
+  }
+  .step p { margin: 4px 0 0; }
+
+  .final {
+    margin: 56px 0 40px;
+    text-align: center;
+  }
+  .final h2 { font-size: 1.4rem; margin-top: 0; }
+  .final p { margin: 8px 0 20px; }
+
+  .section-lead {
+    text-align: center;
+    color: var(--muted);
+    max-width: 60ch;
+    margin: -12px auto 20px;
+  }
+  .compare-wrap { padding: 0; overflow-x: auto; }
+  .compare {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 520px;
+  }
+  .compare th,
+  .compare td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+    font-size: 0.95rem;
+  }
+  .compare thead th {
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .compare tbody th {
+    font-weight: 600;
+    width: 22%;
+  }
+  .compare th.us,
+  .compare td.us {
+    background: rgba(0, 174, 217, 0.08);
+    color: var(--text);
+  }
+  .compare td.them { color: var(--muted); }
+  .compare tr:last-child th,
+  .compare tr:last-child td { border-bottom: none; }
+  .check { color: var(--success); font-weight: 700; margin-right: 4px; }
+
+  /* Mobile: tabel perbandingan berubah jadi kartu bertumpuk, tanpa scroll horizontal */
+  @media (max-width: 640px) {
+    .hero {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding-top: 32px;
+      text-align: center;
+    }
+    .hero h1 { font-size: 2rem; margin: 16px auto; }
+    .hero .cta-row { justify-content: center; }
+    .lead { margin: 0 auto 24px; }
+    .hero-art { order: 2; }
+    .lead { font-size: 1rem; }
+    .cta-row { flex-direction: column; align-items: stretch; }
+    .btn { min-width: 0; width: 100%; }
+
+    .promo { flex-direction: column; align-items: stretch; text-align: left; }
+    .promo .btn { width: 100%; }
+
+    .section { margin-top: 40px; }
+    .section-title { font-size: 1.35rem; }
+
+    .compare-wrap { overflow: visible; }
+    .compare { min-width: 0; }
+    .compare thead { display: none; }
+    .compare,
+    .compare tbody,
+    .compare tr,
+    .compare th,
+    .compare td {
+      display: block;
+      width: 100%;
+    }
+    .compare tr {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .compare tr:last-child { border-bottom: none; }
+    .compare tbody th {
+      width: 100%;
+      padding: 0 0 6px;
+      border: none;
+    }
+    .compare td {
+      padding: 4px 0;
+      border: none;
+      background: none;
+    }
+    .compare td::before {
+      content: attr(data-label);
+      display: block;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .compare td.us { color: var(--text); }
+    .final { margin-top: 40px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pulse .ring { animation: none; }
+    .btn, .feature { transition: none; }
+  }
+</style>

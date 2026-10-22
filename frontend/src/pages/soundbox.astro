@@ -1,0 +1,7 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Soundbox from '../components/Soundbox.tsx';
+---
+<Layout title="Soundbox" current="soundbox" requireAuth>
+  <Soundbox client:load />
+</Layout>
