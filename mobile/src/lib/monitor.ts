@@ -90,13 +90,13 @@ async function pollLoop() {
 export async function startMonitor(): Promise<void> {
   if (looping) return;
   looping = true;
-  startKeepAlive();
+  await startKeepAlive();
   update({ running: true });
   void pollLoop();
 }
 
 export async function stopMonitor(): Promise<void> {
   looping = false;
-  stopKeepAlive();
+  await stopKeepAlive();
   update({ running: false, online: null });
 }
