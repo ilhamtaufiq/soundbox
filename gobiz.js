@@ -20,8 +20,7 @@ const ENV_FILE   = path.join(__dirname, '.env');
  * Mendukung format KEY=VALUE, komentar (#), dan nilai berquote.
  */
 function loadEnv() {
-   if (!fs.existsSync(ENV_FILE)) return {};
-   const content = fs.readFileSync(ENV_FILE, 'utf-8');
+   const content = fs.existsSync(ENV_FILE) ? fs.readFileSync(ENV_FILE, 'utf-8') : '';
    const result = {};
    for (const line of content.split('\n')) {
       const trimmed = line.trim();
@@ -35,6 +34,10 @@ function loadEnv() {
          value = value.slice(1, -1);
       }
       result[key] = value;
+   }
+   // Environment variable (mis. dari Coolify) menimpa isi .env
+   for (const key of ['GOPAY_LOGIN_METHOD', 'GOPAY_PHONE', 'GOPAY_EMAIL', 'GOPAY_PASSWORD', 'QRIS_STRING', 'PRICE_AMOUNT']) {
+      if (process.env[key]) result[key] = process.env[key];
    }
    return result;
 }
