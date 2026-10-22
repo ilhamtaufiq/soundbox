@@ -26,6 +26,7 @@ Stack terdiri dari empat service di `docker-compose.yml`:
    | `ADMIN_PASSWORD` | password login dashboard admin (panjang, acak) |
    | `JWT_SECRET` | string acak panjang, mis. hasil `openssl rand -hex 32` |
    | `INTERNAL_SECRET` | string acak lain, harus sama untuk backend dan bridge |
+   | `PUBLIC_WEB3FORMS_KEY` | access key Web3Forms untuk form pendaftaran; dipakai saat build frontend, jadi harus diisi sebelum deploy |
    | `GOPAY_LOGIN_METHOD` | `password` (disarankan di server, lihat catatan bridge) |
    | `GOPAY_EMAIL`, `GOPAY_PASSWORD` | akun GoBiz, jika memakai metode password |
 

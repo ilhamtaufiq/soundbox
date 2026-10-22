@@ -4,6 +4,8 @@ COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
 ARG PUBLIC_API_URL=https://soundbox.cianjur.space/api
+ARG PUBLIC_WEB3FORMS_KEY=
+ENV PUBLIC_WEB3FORMS_KEY=$PUBLIC_WEB3FORMS_KEY
 ENV PUBLIC_API_URL=$PUBLIC_API_URL
 RUN npm run build
 

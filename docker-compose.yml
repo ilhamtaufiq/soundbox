@@ -38,6 +38,7 @@ services:
       context: ./frontend
       args:
         PUBLIC_API_URL: https://soundbox.cianjur.space/api
+        PUBLIC_WEB3FORMS_KEY: ${PUBLIC_WEB3FORMS_KEY:-}
     restart: unless-stopped
     depends_on:
       - backend
