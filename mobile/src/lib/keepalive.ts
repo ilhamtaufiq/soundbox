@@ -5,16 +5,21 @@ import { NativeModules, Platform } from 'react-native';
 interface KeepAliveNative {
   start(): Promise<boolean>;
   stop(): Promise<boolean>;
+  update(text: string): Promise<boolean>;
 }
 
 const native = NativeModules.KeepAlive as KeepAliveNative | undefined;
+const available = () => Platform.OS === 'android' && !!native;
 
 export async function startKeepAlive(): Promise<void> {
-  if (Platform.OS !== 'android' || !native) return;
-  await native.start();
+  if (available()) await native!.start();
 }
 
 export async function stopKeepAlive(): Promise<void> {
-  if (Platform.OS !== 'android' || !native) return;
-  await native.stop();
+  if (available()) await native!.stop();
+}
+
+/** Teks status yang tampil di notifikasi "Soundbox aktif" */
+export async function updateKeepAliveText(text: string): Promise<void> {
+  if (available()) await native!.update(text).catch(() => {});
 }

@@ -1,6 +1,6 @@
 import { ApiError, listTransactions, type Transaction } from './api';
 import { POLL_MS } from './config';
-import { startKeepAlive, stopKeepAlive } from './keepalive';
+import { startKeepAlive, stopKeepAlive, updateKeepAliveText } from './keepalive';
 import { announcePayment } from './player';
 import { clearToken, getToken } from './session';
 
@@ -43,9 +43,13 @@ export function setUnauthorizedHandler(handler: () => void) {
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+function clock(): string {
+  return new Date().toLocaleTimeString('id-ID');
+}
+
 /**
  * Loop pemantauan. Transaksi yang sudah ada saat mulai tidak diumumkan,
- * hanya yang masuk setelahnya. Loop tetap jalan selama keep-alive aktif.
+ * hanya yang masuk setelahnya. Status tiap pengecekan ditulis ke notifikasi.
  */
 async function pollLoop() {
   let cursor: number | null = null;
@@ -73,6 +77,7 @@ async function pollLoop() {
         }
         update({ online: true });
       }
+      void updateKeepAliveText(`Cek terakhir ${clock()}`);
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) {
         // Token tidak berlaku lagi: hentikan pemantauan dan minta login ulang
@@ -82,6 +87,7 @@ async function pollLoop() {
         return;
       }
       update({ online: false });
+      void updateKeepAliveText(`Gagal cek ${clock()}, mencoba lagi`);
     }
     await sleep(POLL_MS);
   }

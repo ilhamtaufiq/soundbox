@@ -7,7 +7,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 
-/** Jembatan JS untuk menyalakan dan mematikan KeepAliveService */
+/** Jembatan JS untuk menyalakan, mematikan, dan memperbarui teks KeepAliveService */
 class KeepAliveModule(private val reactCtx: ReactApplicationContext) : ReactContextBaseJavaModule(reactCtx) {
 
     override fun getName(): String = "KeepAlive"
@@ -15,8 +15,7 @@ class KeepAliveModule(private val reactCtx: ReactApplicationContext) : ReactCont
     @ReactMethod
     fun start(promise: Promise) {
         try {
-            val intent = Intent(reactCtx, KeepAliveService::class.java)
-            ContextCompat.startForegroundService(reactCtx, intent)
+            ContextCompat.startForegroundService(reactCtx, Intent(reactCtx, KeepAliveService::class.java))
             promise.resolve(true)
         } catch (e: Exception) {
             promise.reject("KEEP_ALIVE_START_FAILED", e)
@@ -30,6 +29,19 @@ class KeepAliveModule(private val reactCtx: ReactApplicationContext) : ReactCont
             promise.resolve(true)
         } catch (e: Exception) {
             promise.reject("KEEP_ALIVE_STOP_FAILED", e)
+        }
+    }
+
+    /** Memperbarui teks notifikasi (hanya saat layanan sudah berjalan) */
+    @ReactMethod
+    fun update(text: String, promise: Promise) {
+        try {
+            val intent = Intent(reactCtx, KeepAliveService::class.java)
+                .putExtra(KeepAliveService.EXTRA_TEXT, text)
+            reactCtx.startService(intent)
+            promise.resolve(true)
+        } catch (e: Exception) {
+            promise.reject("KEEP_ALIVE_UPDATE_FAILED", e)
         }
     }
 }
